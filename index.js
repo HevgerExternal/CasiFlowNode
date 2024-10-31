@@ -21,6 +21,7 @@ app.use(
 app.use("/api/auth", require("./routes/authRoutes"));
 app.use("/api/users", require("./routes/userRoutes"));
 app.use("/api/balance", require("./routes/balanceRoutes"));
+app.use("/api/dashboard", require("./routes/dashboardRoutes"));
 
 app.use(errorHandler);
 

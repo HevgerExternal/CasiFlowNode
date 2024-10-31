@@ -174,7 +174,8 @@ exports.searchUsersByRole = async (req, res, next) => {
 
 exports.updatePassword = async (req, res, next) => {
   try {
-    const { userId, newPassword } = req.body;
+    const { newPassword } = req.body;
+    const userId = req.params.id;
     const currentUser = req.user;
 
     if (!userId || !newPassword) {
@@ -225,5 +226,38 @@ exports.updatePassword = async (req, res, next) => {
     res.status(200).json({ message: "Password updated successfully" });
   } catch (err) {
     next(err);
+  }
+};
+
+async function buildTree(userId, permissions) {
+  const children = await User.find({ parentId: userId });
+
+  const childTrees = await Promise.all(
+    children.map(async (child) => {
+      const subTree = await buildTree(child._id, permissions);
+      return {
+        id: child._id,
+        username: child.username,
+        role: child.role,
+        balance: child.balance,
+        children: subTree,
+      };
+    })
+  );
+
+  return childTrees;
+}
+
+exports.getUserTree = async (req, res, next) => {
+  try {
+    const { _id, role } = req.user;
+
+    const descendants = await getAllDescendants(_id);
+
+    const tree = await buildTree(_id, descendants);
+
+    res.status(200).json({ tree });
+  } catch (error) {
+    next(error);
   }
 };

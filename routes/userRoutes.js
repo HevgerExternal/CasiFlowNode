@@ -12,6 +12,8 @@ router.get("/get/:id", authMiddleware, userController.getUserById);
 
 router.get("/byrole/:role", authMiddleware, userController.getUsersByRole);
 
+router.get("/hierarchy", authMiddleware, userController.getUserTree);
+
 router.put(
   "/:id/update-password",
   authMiddleware,

@@ -7,6 +7,8 @@ const generateAccessToken = (user) => {
     create: permissions[user.role]?.create || [],
     view: permissions[user.role]?.view || [],
     updatePassword: permissions[user.role]?.updatePassword || [],
+    canDeposit: permissions[user.role]?.canDeposit || [],
+    canWithdraw: permissions[user.role]?.canWithdraw || [],
   };
 
   return jwt.sign(
